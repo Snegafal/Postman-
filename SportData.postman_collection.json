@@ -1,0 +1,724 @@
+{
+	"info": {
+		"_postman_id": "6ac2f9b9-7e08-491f-b8e7-442cf8bfd26b",
+		"name": "SportData",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19392757"
+	},
+	"item": [
+		{
+			"name": "World Cup",
+			"item": [
+				{
+					"name": "GET World Leagues",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://app.sportdataapi.com/api/v1/soccer/leagues?apikey={{sportDataApikey}}&country_id=7",
+							"protocol": "https",
+							"host": [
+								"app",
+								"sportdataapi",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"soccer",
+								"leagues"
+							],
+							"query": [
+								{
+									"key": "apikey",
+									"value": "{{sportDataApikey}}"
+								},
+								{
+									"key": "country_id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Matches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://app.sportdataapi.com/api/v1/soccer/matches?apikey={{sportDataApikey}}&season_id=3072",
+							"protocol": "https",
+							"host": [
+								"app",
+								"sportdataapi",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"soccer",
+								"matches"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2020-09-19",
+									"disabled": true
+								},
+								{
+									"key": "apikey",
+									"value": "{{sportDataApikey}}"
+								},
+								{
+									"key": "season_id",
+									"value": "3072"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GET Check auth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/status?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"status"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Countries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response contains Russia\", function () {",
+							"    pm.expect(jsonData.data[101].name).to.eql(\"Russia\");",
+							"});",
+							"",
+							"pm.test(\"Check Belarus property\", function () {",
+							"    pm.expect(jsonData.data[19]).to.have.property(\"country_code\", \"by\");",
+							"});",
+							"",
+							"pm.test(\"Check Africa response\", function () {",
+							"    pm.expect(jsonData.data).to.deep.include({\"country_id\": 1,",
+							"            \"name\": \"Africa\",",
+							"            \"country_code\": null,",
+							"            \"continent\": \"Africa\"});",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/countries?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"countries"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Country by Continent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"Response contains country_code ru\", function () {",
+							"    pm.expect(jsonData.data['101'].country_code).to.eql(\"ru\");",
+							"});",
+							"",
+							"pm.test(\"Check Germany info\", function () {",
+							"    pm.expect(jsonData.data).to.deep.include({\"47\": {",
+							"            \"country_id\": 48,",
+							"            \"name\": \"Germany\",",
+							"            \"country_code\": \"de\",",
+							"            \"continent\": \"Europe\"",
+							"    }",
+							"        });",
+							"});",
+							"",
+							"pm.test(\"Check Albania continent\", function () {",
+							"    pm.expect(jsonData.data['8'].continent).to.include(\"Europe\");",
+							"});",
+							"",
+							"var continent = pm.response.json().query.continent;",
+							"Object.values(jsonData.data).forEach(function(element){",
+							"    pm.test(\"Check name of continent\", function () {",
+							"    pm.expect(element.continent).to.include(continent);",
+							"});",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/countries?apikey={{sportDataApikey}}&continent=Europe",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"countries"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "continent",
+							"value": "Europe"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Country Info by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Russia ID\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.name).to.eql(\"Russia\");",
+							"});",
+							"",
+							"pm.test(\"Russia country_code\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.country_code).to.eql(\"ru\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/countries/102?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"countries",
+						"102"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Country Leagues",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Premier League info in response\", function () {",
+							"    pm.expect(jsonData.data).to.deep.include({\"503\": {",
+							"            \"league_id\": 504,",
+							"            \"country_id\": 102,",
+							"            \"name\": \"Premier League\"}",
+							"        });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/leagues?apikey={{sportDataApikey}}&country_id=102",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"leagues"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "country_id",
+							"value": "102"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET League by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/leagues/504?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"leagues",
+						"504"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Seasons by League ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/seasons?apikey={{sportDataApikey}}&league_id=504",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"seasons"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "league_id",
+							"value": "504"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Season By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/seasons/3283?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"seasons",
+						"3283"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Teams by Country ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.country.name).to.eql(\"Russia\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/teams?apikey={{sportDataApikey}}&country_id=102",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"teams"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "country_id",
+							"value": "102"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Players by Country ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/players?apikey={{sportDataApikey}}&country_id=102&max_age=29",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"players"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "country_id",
+							"value": "102"
+						},
+						{
+							"key": "max_age",
+							"value": "29"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET League Standings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Check part of response\", function () {",
+							"    pm.expect(jsonData.data.standings).to.include.deep.members([{",
+							"        \"team_id\": 6180,",
+							"                \"position\": 2,",
+							"                \"points\": 52,",
+							"                \"status\": \"Promotion\",",
+							"                \"result\": \"Champions League Qualification\",",
+							"                \"overall\": {",
+							"                    \"games_played\": 26,",
+							"                    \"won\": 16,",
+							"                    \"draw\": 4,",
+							"                    \"lost\": 6,",
+							"                    \"goals_diff\": 20,",
+							"                    \"goals_scored\": 45,",
+							"                    \"goals_against\": 25",
+							"                },",
+							"                \"home\": {",
+							"                    \"games_played\": 13,",
+							"                    \"won\": 7,",
+							"                    \"draw\": 3,",
+							"                    \"lost\": 3,",
+							"                    \"goals_diff\": 11,",
+							"                    \"goals_scored\": 22,",
+							"                    \"goals_against\": 11",
+							"                },",
+							"                \"away\": {",
+							"                    \"games_played\": 13,",
+							"                    \"won\": 9,",
+							"                    \"draw\": 1,",
+							"                    \"lost\": 3,",
+							"                    \"goals_diff\": 9,",
+							"                    \"goals_scored\": 23,",
+							"                    \"goals_against\": 14",
+							"                }",
+							"                }]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/standings?apikey={{sportDataApikey}}&season_id=1982",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"standings"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "season_id",
+							"value": "1982"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Team by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/teams/6183?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"teams",
+						"6183"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Venues",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/venues?apikey={{sportDataApikey}}&country_id=102",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"venues"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "country_id",
+							"value": "102"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Venue by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/venues/2859?apikey={{sportDataApikey}}",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"venues",
+						"2859"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Referees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://app.sportdataapi.com/api/v1/soccer/referees?apikey={{sportDataApikey}}&country_id=102",
+					"protocol": "https",
+					"host": [
+						"app",
+						"sportdataapi",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"soccer",
+						"referees"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "{{sportDataApikey}}"
+						},
+						{
+							"key": "country_id",
+							"value": "102"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
